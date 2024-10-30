@@ -1,1 +1,1 @@
-from widgets.mainapp import MainApp
+from widgets.application import ( MainApp, MedicalCard )
