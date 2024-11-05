@@ -1,12 +1,25 @@
 MDScreen:
-    theme_bg_color: "Custom"
     md_bg_color: self.theme_cls.backgroundColor
 
-    MDScrollView:
-        do_scroll_x: False
+    MDRelativeLayout:
 
         MDBoxLayout:
-            id: main_scroll
             orientation: "vertical"
-            padding: "15dp"
-            spacing: "15dp"
+
+            TitleBar:
+
+            MDScrollView:
+                do_scroll_x: False
+
+                MDBoxLayout:
+                    id: main_scroll
+                    padding: "4dp"
+                    spacing: "10dp"
+                    orientation: "vertical"
+                    adaptive_height: True
+
+        MDFabButton:
+            pos_hint: {'center_x': 0.5, 'y': 0.02 }
+            icon: "plus"
+            style: "standard"
+            on_release: app.createCard()

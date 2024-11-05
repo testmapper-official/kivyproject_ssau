@@ -1,0 +1,19 @@
+<MedicalCard>
+    orientation: "horizontal"
+    size_hint_y: None
+    height: "85dp"
+    theme_bg_color: "Custom"
+    md_bg_color: 0.596, 0.835, 0.556, 1
+
+    MDBoxLayout:
+        size_hint_x: 0.04
+
+    MDAnchorLayout:
+        md_bg_color: .85, .85, .85, 1
+        radius: ["0dp", root.radius[1], root.radius[2], "0dp"]
+        anchor_x: "right"
+
+        FitImage:
+            source: "data/лиссс.png"
+            size_hint_x: .25
+            radius: 0, root.radius[1], root.radius[2], 0
