@@ -1,7 +1,7 @@
 <MedicalCard>
     orientation: "horizontal"
     size_hint_y: None
-    height: "85dp"
+    height: "95dp"
     theme_bg_color: "Custom"
     md_bg_color: 0.596, 0.835, 0.556, 1
 
@@ -20,21 +20,6 @@
             padding: "10dp"
             spacing: "2dp"
 
-            MDScrollView:
-                do_scroll_x: False
-
-                MDBoxLayout:
-                    orientation: "vertical"
-                    adaptive_height: True
-
-                    MDBoxLayout:
-                        adaptive_height: True
-
-                        MDLabel:
-                            text: "Какое-то описание справки, возможно, полезная информация, возможно, нет. Главное, что это текст! Но он ведь может еще и прокручиться, черт возьми! Как же это удобно!!! Вот они - прелести современных технологий :)"
-                            adaptive_height: True
-                            italic: True
-
             MDBoxLayout:
                 orientation: "vertical"
                 adaptive_height: True
@@ -49,9 +34,23 @@
                     adaptive_height: True
 
                 MDLabel:
-                    text: root.status
+                    text: root.status_variants[root.status]["verdict"]
                     adaptive_height: True
 
+            MDScrollView:
+                do_scroll_x: False
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    adaptive_height: True
+
+                    MDBoxLayout:
+                        adaptive_height: True
+
+                        MDLabel:
+                            text: "Какое-то описание справки, возможно, полезная информация, возможно, нет. Главное, что это текст! Но он ведь может еще и прокручиться, черт возьми! Как же это удобно!!! Вот они - прелести современных технологий :)"
+                            adaptive_height: True
+                            italic: True
 
         MDBoxLayout:
             size_hint_x: 0.3
