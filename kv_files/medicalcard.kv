@@ -20,15 +20,38 @@
             padding: "10dp"
             spacing: "2dp"
 
-            MDLabel:
-                text: root.name
-                bold: True
+            MDScrollView:
+                do_scroll_x: False
 
-            MDLabel:
-                text: root.date
+                MDBoxLayout:
+                    orientation: "vertical"
+                    adaptive_height: True
 
-            MDLabel:
-                text: root.status
+                    MDBoxLayout:
+                        adaptive_height: True
+
+                        MDLabel:
+                            text: "Какое-то описание справки, возможно, полезная информация, возможно, нет. Главное, что это текст! Но он ведь может еще и прокручиться, черт возьми! Как же это удобно!!! Вот они - прелести современных технологий :)"
+                            adaptive_height: True
+                            italic: True
+
+            MDBoxLayout:
+                orientation: "vertical"
+                adaptive_height: True
+
+                MDLabel:
+                    text: root.name
+                    bold: True
+                    adaptive_height: True
+
+                MDLabel:
+                    text: root.date
+                    adaptive_height: True
+
+                MDLabel:
+                    text: root.status
+                    adaptive_height: True
+
 
         MDBoxLayout:
             size_hint_x: 0.3
