@@ -8,12 +8,31 @@
     MDBoxLayout:
         size_hint_x: 0.04
 
-    MDAnchorLayout:
+    MDBoxLayout:
+        orientation: "horizontal"
         md_bg_color: .85, .85, .85, 1
         radius: ["0dp", root.radius[1], root.radius[2], "0dp"]
-        anchor_x: "right"
 
-        FitImage:
-            source: "data/лиссс.png"
-            size_hint_x: .25
-            radius: 0, root.radius[1], root.radius[2], 0
+        MDBoxLayout:
+            orientation: "vertical"
+            md_bg_color: .85, .85, .85, 1
+            size_hint_x: 0.7
+            padding: "10dp"
+            spacing: "2dp"
+
+            MDLabel:
+                text: root.name
+                bold: True
+
+            MDLabel:
+                text: root.date
+
+            MDLabel:
+                text: root.status
+
+        MDBoxLayout:
+            size_hint_x: 0.3
+            padding: "10dp"
+            FitImage:
+                source: root.image
+                radius: [root.radius[0] / 2, root.radius[1] / 2, root.radius[2] / 2, root.radius[3] / 2]
