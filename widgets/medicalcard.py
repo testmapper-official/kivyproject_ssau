@@ -2,11 +2,20 @@ from kivy.properties import StringProperty, NumericProperty
 from kivy.lang import Builder
 from kivy.animation import Animation
 from kivy.metrics import dp
+from kivy.uix.widget import Widget
 
 from kivymd.uix.card import MDCard
+from kivymd.uix.button import MDButton, MDButtonText
+from kivymd.uix.dialog import (
+    MDDialog,
+    MDDialogHeadlineText,
+    MDDialogButtonContainer
+)
+
+from widgets.button_extra_behavior import ButtonExtraBehavior
 
 
-class MedicalCard(MDCard):
+class MedicalCard(ButtonExtraBehavior, MDCard):
     name = StringProperty()
     date = StringProperty()
     status = NumericProperty()
@@ -28,8 +37,8 @@ class MedicalCard(MDCard):
     }
     Builder.load_file("kv_files/medicalcard.kv")
 
-    def __init__(self, name="Справка", date="01.01.1935", status=0, image="data/лиссс.png", **kwargs):
-        super().__init__(kwargs)
+    def __init__(self, name="Справка", date="01.01.1935", status=0, image="data/лиссс.png"):
+        super().__init__()
         self.name = name
         self.date = date
         self.status = status
@@ -38,7 +47,29 @@ class MedicalCard(MDCard):
         self.image = image
         self.set_scan()
 
-    def on_press(self, *args) -> None:
+    def on_long_press(self, *args):
+        dialog = MDDialog(
+            MDDialogHeadlineText(
+                text="Удалить справку?",
+                halign="left",
+            ),
+            MDDialogButtonContainer(
+                Widget(),
+                MDButton(
+                    MDButtonText(text="Отмена"),
+                    style="text",
+                ),
+                MDButton(
+                    MDButtonText(text="Удалить"),
+                    style="text",
+                ),
+                spacing="8dp",
+            ),
+        )
+        dialog.update_width()
+        dialog.open()
+
+    def on_release(self, *args) -> None:
         self.narrow() if self.expanded else self.expand()
 
     def expand(self):
