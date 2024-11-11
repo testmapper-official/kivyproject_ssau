@@ -45,7 +45,7 @@ class MainApp(MDApp):
         document = self.data["documents"][index]
         self.root.ids.main_scroll.add_widget(
             MedicalCard(name=document["title"], date=document["date"], status=document["status"],
-                        image=document["scan"])
+                        image=os.path.abspath(document["scan"]))
         )
 
     def exit_file_manager(self, *args):
@@ -86,17 +86,17 @@ class MainApp(MDApp):
             self.warn("Невозможно получить изображение")
             return
 
-        shutil.copy2(path, "data/images/" + filename)
+        shutil.copy2(path, os.path.abspath("data\\images") + "\\" + filename)
 
         document = {
             "title": "Без названия",
             "date": "20.02.2000",
             "status": 0,
-            "scan": "data/images/" + filename,
+            "scan": "data\\images\\" + filename,
         }
 
         self.data.documents.append(document)
-
+        print(os.path.abspath(document["scan"]))
 
         self.add_card(-1)
 
