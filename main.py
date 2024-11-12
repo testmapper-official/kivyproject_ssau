@@ -29,8 +29,9 @@ class MainApp(MDApp):
                 self.data = json.load(f)
         else:
             self.data = {
+                "doc_id": 0,
                 "account": {
-                    "avatar": "data/лиссс.png"
+                    "avatar": "data/krisaflex.gif"
                 },
                 "documents": [],
             }
@@ -85,14 +86,15 @@ class MainApp(MDApp):
         if format not in ["png", "jpg", "jpeg"]:
             self.warn("Невозможно получить изображение")
             return
-
-        shutil.copy2(path, os.path.abspath("data\\images") + "\\" + filename)
+        new_filename = '%s.%s' % (str(self.data["doc_id"]), format)
+        self.data["doc_id"] += 1
+        shutil.copy2(path, os.path.abspath("data\\images") + "\\" + new_filename)
 
         document = {
             "title": "Без названия",
             "date": "20.02.2000",
             "status": 0,
-            "scan": "data\\images\\" + filename,
+            "scan": "data\\images\\" + new_filename,
         }
 
         self.data.documents.append(document)

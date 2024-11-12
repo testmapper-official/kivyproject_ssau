@@ -3,4 +3,5 @@
 /widgets/templates/__pycache__
 /.idea
 /data/account.json
+/data/images/
 /test.py
