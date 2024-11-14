@@ -7,7 +7,7 @@ from kivymd.app import MDApp
 from kivymd.uix.filemanager import MDFileManager
 from kivymd.uix.snackbar import MDSnackbar, MDSnackbarText
 
-from widgets import MedicalCard, TitleBar
+from widgets import MedicalCard
 import json
 import shutil
 import os
@@ -21,7 +21,8 @@ class MainApp(MDApp):
     def build(self):
         self.manager_open = False
         self.file_manager = MDFileManager(
-            exit_manager=self.exit_file_manager, select_path=self.create_card
+            exit_manager=self.exit_file_manager,
+            select_path=self.create_card
         )
 
         if os.path.isfile("data/account.json"):
@@ -45,8 +46,11 @@ class MainApp(MDApp):
     def add_card(self, index):
         document = self.data["documents"][index]
         self.root.ids.main_scroll.add_widget(
-            MedicalCard(name=document["title"], date=document["date"], status=document["status"],
-                        image=os.path.abspath(document["scan"]))
+            MedicalCard(name=document["title"],
+                        date=document["date"],
+                        status=document["status"],
+                        image=os.path.abspath(document["scan"])
+                        )
         )
 
     def exit_file_manager(self, *args):
@@ -54,9 +58,7 @@ class MainApp(MDApp):
         self.manager_open = False
 
     def open_file_manager(self):
-        self.file_manager.show(
-            os.path.expanduser("~")
-        )
+        self.file_manager.show( os.path.expanduser("~") )
         self.manager_open = True
 
     def warn(self, text):
@@ -80,8 +82,7 @@ class MainApp(MDApp):
             self.warn("Невозможно получить изображение")
             return
 
-        format = path.split('.')[1]
-        filename = path.split("\\")[-1].split("/")[-1]
+        format = path.split('.')[-1]
 
         if format not in ["png", "jpg", "jpeg"]:
             self.warn("Невозможно получить изображение")
