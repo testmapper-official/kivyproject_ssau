@@ -12,10 +12,21 @@ from kivymd.uix.button import MDButton, MDButtonText
 from kivymd.uix.dialog import (
     MDDialog,
     MDDialogHeadlineText,
-    MDDialogButtonContainer
+    MDDialogButtonContainer,
+    MDDialogContentContainer
+)
+from kivymd.uix.pickers import MDDockedDatePicker
+from kivymd.uix.textfield import (
+    MDTextField,
+    MDTextFieldLeadingIcon,
+    MDTextFieldHintText,
+    MDTextFieldHelperText,
+    MDTextFieldTrailingIcon,
+    MDTextFieldMaxLengthText,
 )
 
 from widgets.button_extra_behavior import ButtonExtraBehavior
+from widgets.textfieldDate import TextFieldDate
 
 
 class MedicalCard(ButtonExtraBehavior, MDCard):
@@ -52,8 +63,69 @@ class MedicalCard(ButtonExtraBehavior, MDCard):
     def on_long_press(self, *args):
         self.dialog = MDDialog(
             MDDialogHeadlineText(
-                text="Удалить справку?",
+                text="Что хотите сделать?",
                 halign="left",
+            ),
+            MDDialogContentContainer(
+                Widget(),
+                MDButton(
+                    MDButtonText(text="Удалить",
+                                 theme_text_color="Custom",
+                                 text_color="red"
+                                 ),
+                    style="text",
+                    on_release=self.delete_card,
+                ),
+                MDButton(
+                    MDButtonText(text="Редактировать"),
+                    style="text",
+                    on_release=self.edit_card,
+                ),
+                Widget(),
+                orientation="horizontal",
+            ),
+            MDDialogButtonContainer(
+                Widget(),
+                MDButton(
+                    MDButtonText(text="Ничего"),
+                    style="text",
+                    on_release=self.close_dialog,
+                ),
+                Widget()
+            )
+        )
+        self.dialog.update_width()
+        self.dialog.open()
+
+    def edit_card(self, *args):
+        self.close_dialog()
+
+        textfield = MDTextField(
+            MDTextFieldHintText(
+                text=self.name
+            )
+        )
+        self.dialog = MDDialog(
+            MDDialogHeadlineText(
+                text="Редактирование",
+                halign="left",
+            ),
+
+            MDDialogContentContainer(
+                MDTextField(
+                    MDTextFieldHintText(
+                        text="Название"
+                    ),
+                    text=self.name,
+                    id="name"
+                ),
+
+                TextFieldDate(
+                    text=self.date,
+                    id="date"
+                ),
+                orientation="vertical",
+                spacing="10dp"
             ),
             MDDialogButtonContainer(
                 Widget(),
@@ -63,18 +135,32 @@ class MedicalCard(ButtonExtraBehavior, MDCard):
                     on_release=self.close_dialog,
                 ),
                 MDButton(
-                    MDButtonText(text="Удалить"),
+                    MDButtonText(text="Сохранить"),
                     style="text",
-                    on_release=self.delete_card,
+                    on_release=self.save_edit,
                 ),
-                spacing="8dp",
-            ),
+                Widget()
+            )
         )
         self.dialog.update_width()
         self.dialog.open()
 
     def close_dialog(self, *args):
         self.dialog.dismiss()
+
+    def save_edit(self, *args):
+        new_date = self.dialog.ids.content_container.children[0].children[0].text
+        new_name = self.dialog.ids.content_container.children[0].children[1].text
+        self.name = new_name
+        self.date = new_date
+
+        docs = App.get_running_app().data['documents']
+        images = list(map(lambda x: os.path.abspath(x["scan"].replace("/", "\\")), docs))
+        index = images.index(self.image)
+        docs[index]["title"] = self.name
+        docs[index]["date"] = self.date
+
+        self.close_dialog()
 
     def delete_card(self, *args):
         self.close_dialog()
