@@ -4,6 +4,11 @@ from kivy.properties import StringProperty, NumericProperty
 from kivy.lang import Builder
 from kivy.animation import Animation
 from kivy.metrics import dp
+from kivy.uix.button import Button
+from kivy.uix.image import Image
+from kivy.uix.popup import Popup
+from kivy.uix.scatterlayout import ScatterLayout
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from kivy.app import App
 
@@ -15,6 +20,7 @@ from kivymd.uix.dialog import (
     MDDialogButtonContainer,
     MDDialogContentContainer
 )
+from kivymd.uix.fitimage import FitImage
 from kivymd.uix.pickers import MDDockedDatePicker
 from kivymd.uix.textfield import (
     MDTextField,
@@ -34,6 +40,7 @@ class MedicalCard(ButtonExtraBehavior, MDCard):
     date = StringProperty()
     status = NumericProperty()
     image = StringProperty()
+    image_text = StringProperty()
     status_variants = {
         0: {
             "verdict": "хорошо",
@@ -58,7 +65,23 @@ class MedicalCard(ButtonExtraBehavior, MDCard):
         self.expanded = False
         self.set_status(status)
         self.image = image
+        self.image_text = App.get_running_app().convert_image_to_text(self.image)# " ".join(App.get_running_app().reader.readtext(self.image, detail = 0))
         self.set_image()
+
+    def image_open(self):
+        if not self.expanded:
+            self.expand()
+            return
+
+        # create content and add to the popup
+        content = ScatterLayout()
+        content.add_widget(Image(source=self.image))
+
+        popup = Popup(title='', content=content, auto_dismiss=True, size_hint=(0.9, 0.9))
+
+        # open the popup
+        popup.open()
+        print("image is clicked")
 
     def on_long_press(self, *args):
         self.dialog = MDDialog(

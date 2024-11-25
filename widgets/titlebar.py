@@ -10,6 +10,11 @@ class TitleBar(MDListItem):
     avatar = StringProperty()
     Builder.load_file("kv_files/titlebar.kv")
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.set_avatar()
+
     def set_avatar(self):
         self.avatar = App.get_running_app().data['account']['avatar']
 

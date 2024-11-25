@@ -1,3 +1,5 @@
+import cv2
+import pytesseract
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.properties import DictProperty
@@ -12,6 +14,7 @@ import json
 import shutil
 import os
 
+pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 Window.size = (330, 550)
 
 
@@ -19,6 +22,8 @@ class MainApp(MDApp):
     data = DictProperty()
 
     def build(self):
+        print(pytesseract.pytesseract.get_languages())
+        # self.reader = easyocr.Reader(['ch_sim','en'])
         self.manager_open = False
         self.file_manager = MDFileManager(
             exit_manager=self.exit_file_manager,
@@ -52,6 +57,11 @@ class MainApp(MDApp):
                         image=os.path.abspath(document["scan"])
                         )
         )
+
+    def convert_image_to_text(self, image):
+        image = cv2.imread(image)
+        text = pytesseract.image_to_string(image, lang='rus')
+        return text
 
     def exit_file_manager(self, *args):
         self.file_manager.close()

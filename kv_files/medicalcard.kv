@@ -48,13 +48,18 @@
                         adaptive_height: True
 
                         MDLabel:
-                            text: "Какое-то описание справки, возможно, полезная информация, возможно, нет. Главное, что это текст! Но он ведь может еще и прокручиться, черт возьми! Как же это удобно!!! Вот они - прелести современных технологий :)"
+                            text: root.image_text
                             adaptive_height: True
                             italic: True
 
-        MDBoxLayout:
+        AnchorLayout:
             size_hint_x: 0.3
             padding: "10dp"
+
             FitImage:
                 source: root.image
                 radius: [root.radius[0] / 2, root.radius[1] / 2, root.radius[2] / 2, root.radius[3] / 2]
+
+            Button:
+                background_color: 0, 0, 0, 0
+                on_release: root.image_open()
