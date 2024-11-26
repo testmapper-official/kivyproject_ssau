@@ -40,7 +40,7 @@ class MedicalCard(ButtonExtraBehavior, MDCard):
     date = StringProperty()
     status = NumericProperty()
     image = StringProperty()
-    image_text = StringProperty()
+    recommendation = StringProperty()
     status_variants = {
         0: {
             "verdict": "хорошо",
@@ -57,7 +57,8 @@ class MedicalCard(ButtonExtraBehavior, MDCard):
     }
     Builder.load_file("kv_files/medicalcard.kv")
 
-    def __init__(self, name="Справка", date="01.01.1935", status=0, image="data/лиссс.png"):
+    def __init__(self, name="Справка", date="01.01.1935", status=0, image="data/лиссс.png",
+                 recommendation="Все хорошо"):
         super().__init__()
         self.name = name
         self.date = date
@@ -65,7 +66,9 @@ class MedicalCard(ButtonExtraBehavior, MDCard):
         self.expanded = False
         self.set_status(status)
         self.image = image
-        self.image_text = App.get_running_app().convert_image_to_text(self.image)# " ".join(App.get_running_app().reader.readtext(self.image, detail = 0))
+        self.recommendation = recommendation
+        # App.get_running_app().convert_image_to_text(self.image)
+        # " ".join(App.get_running_app().reader.readtext(self.image, detail = 0))
         self.set_image()
 
     def image_open(self):

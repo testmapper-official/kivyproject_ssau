@@ -1,5 +1,3 @@
-import cv2
-import pytesseract
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.properties import DictProperty
@@ -9,12 +7,13 @@ from kivymd.app import MDApp
 from kivymd.uix.filemanager import MDFileManager
 from kivymd.uix.snackbar import MDSnackbar, MDSnackbarText
 
-from widgets import MedicalCard
+from widgets import MedicalCard, DOCUMENT_CLASSES
+from widgets.analyzer import get_result
 import json
 import shutil
 import os
+from datetime import datetime, timedelta
 
-pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 Window.size = (330, 550)
 
 
@@ -22,8 +21,6 @@ class MainApp(MDApp):
     data = DictProperty()
 
     def build(self):
-        print(pytesseract.pytesseract.get_languages())
-        # self.reader = easyocr.Reader(['ch_sim','en'])
         self.manager_open = False
         self.file_manager = MDFileManager(
             exit_manager=self.exit_file_manager,
@@ -50,25 +47,42 @@ class MainApp(MDApp):
 
     def add_card(self, index):
         document = self.data["documents"][index]
+        dt = datetime.strptime(document["date"], "%Y.%m.%d")
+        now = datetime.now()
+        difference = now - dt
+        match document["class"]:
+            case DOCUMENT_CLASSES.CLASS_FLUOROGRAPHY:
+                if difference > timedelta(days=365):
+                    document["status"] = 1
+                elif difference > timedelta(days=351):  # Срок начинает истекать за 14 дней до окончания
+                    document["status"] = 2
+            case DOCUMENT_CLASSES.CLASS_BLOOD_ANALYSIS:
+                if difference > timedelta(days=180):
+                    document["status"] = 1
+                elif difference > timedelta(days=166):  # Срок начинает истекать за 14 дней до окончания
+                    document["status"] = 2
+            case DOCUMENT_CLASSES.CLASS_UNKNOWN:
+                pass
+
         self.root.ids.main_scroll.add_widget(
             MedicalCard(name=document["title"],
                         date=document["date"],
                         status=document["status"],
-                        image=os.path.abspath(document["scan"])
+                        image=os.path.abspath(document["scan"]),
+                        recommendation=(document["recommendation"] if "recommendation" in document.keys() else ""),
                         )
         )
 
     def convert_image_to_text(self, image):
-        image = cv2.imread(image)
-        text = pytesseract.image_to_string(image, lang='rus')
-        return text
+        data = json.loads(get_result(image).split("```json")[-1].split("```")[0])
+        return data
 
     def exit_file_manager(self, *args):
         self.file_manager.close()
         self.manager_open = False
 
     def open_file_manager(self):
-        self.file_manager.show( os.path.expanduser("~") )
+        self.file_manager.show(os.path.expanduser("~"))
         self.manager_open = True
 
     def warn(self, text):
@@ -101,11 +115,15 @@ class MainApp(MDApp):
         self.data["doc_id"] += 1
         shutil.copy2(path, os.path.abspath("data\\images") + "\\" + new_filename)
 
+        mistral_data = self.convert_image_to_text("data\\images\\" + new_filename)
+
         document = {
-            "title": "Без названия",
-            "date": "20.02.2000",
+            "title": mistral_data["title"],
+            "date": mistral_data["date"],
             "status": 0,
+            "class": mistral_data["class"],
             "scan": "data\\images\\" + new_filename,
+            "recommendation": mistral_data["recommendation"],
         }
 
         self.data.documents.append(document)
